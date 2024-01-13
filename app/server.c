@@ -97,6 +97,8 @@ void *handle_client(void *arg)
 
 	char buffer[1024];
 	int bytes_read;
+	RESPQueue respQueue;
+	initQueue(&respQueue, 10);
 
 	while (1)
 	{
@@ -111,11 +113,15 @@ void *handle_client(void *arg)
 
 		char *response = "+OK\r\n";
 
-		// Parse the command
-		parseRedisCommand(buffer);
+		parseRedisCommand(&respQueue, buffer);
 
+		for (size_t i = 0; i < respQueue.size; i++)
+		{
+			printf("Type: %d, Value: %s\n", respQueue.commands[i].type, respQueue.commands[i].value);
+		}
 		send(client_fd, response, strlen(response), 0);
 	}
+	freeQueue(&respQueue);
 	printf("Closing connection\n");
 	close(client_fd);
 	return NULL;

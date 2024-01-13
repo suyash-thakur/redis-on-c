@@ -1,17 +1,32 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "include/resp_parser.h"
 
-typedef enum
+void initQueue(RESPQueue *queue, size_t capacity)
 {
-    SIMPLE_STRING,
-    ERROR,
-    INTEGER,
-    BULK_STRING,
-    ARRAY,
-    UNKNOWN
-} RESPType;
+    queue->commands = malloc(capacity * sizeof(RESPCommand));
+    queue->size = 0;
+    queue->capacity = capacity;
+}
 
-void parseBulkString(char *buffer, size_t *index)
+void enqueue(RESPQueue *queue, RESPCommand command)
+{
+    if (queue->size < queue->capacity)
+    {
+        queue->commands[queue->size++] = command;
+    }
+    else
+    {
+        printf("Queue is full. Cannot enqueue.\n");
+    }
+}
+
+void freeQueue(RESPQueue *queue)
+{
+    free(queue->commands);
+}
+
+RESPCommand parseBulkString(RESPQueue *respQueue, char *buffer, size_t *index)
 {
     (*index)++;
 
@@ -34,11 +49,11 @@ void parseBulkString(char *buffer, size_t *index)
 
     string[length] = '\0';
 
-    printf("%s\n", string);
-    printf("\n");
+    RESPCommand command = {BULK_STRING, string};
+    return command;
 }
 
-void parseArray(char *buffer, size_t *index)
+void parseArray(RESPQueue *respQueue, char *buffer, size_t *index)
 {
     (*index)++;
 
@@ -52,20 +67,22 @@ void parseArray(char *buffer, size_t *index)
 
     for (int i = 0; i < elements; i++)
     {
-
-        parseBulkString(buffer, index);
+        RESPCommand element = parseBulkString(respQueue, buffer, index);
+        element.type = BULK_STRING;
+        enqueue(respQueue, element);
     }
 }
 
-void parseRedisCommand(char *buffer)
+void parseRedisCommand(RESPQueue *respQueue, char *buffer)
 {
     size_t index = 0;
 
     switch (buffer[index])
     {
     case '*':
-        parseArray(buffer, &index);
-        break;
+    {
+        parseArray(respQueue, buffer, &index);
+    }
     default:
         printf("Unknown command type\n");
     }
