@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include <pthread.h>
 #include <fcntl.h>
+#include "include/resp_parser.h"
 
 #define MAX_THREADS 5
 
@@ -109,6 +110,9 @@ void *handle_client(void *arg)
 		}
 
 		char *response = "+OK\r\n";
+
+		// Parse the command
+		parseRedisCommand(buffer);
 
 		send(client_fd, response, strlen(response), 0);
 	}
