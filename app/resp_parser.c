@@ -82,8 +82,9 @@ void parseRedisCommand(RESPQueue *respQueue, char *buffer)
     case '*':
     {
         parseArray(respQueue, buffer, &index);
+        break;
     }
     default:
-        printf("Unknown command type\n");
+        printf("Unknown command type %c\n", buffer[index]);
     }
 }

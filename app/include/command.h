@@ -9,15 +9,22 @@ typedef enum
     SET,
     DEL,
     ECHO,
+    INVALID
 } CommandType;
 
 typedef struct
 {
     CommandType type;
     char *key;
-    char *value;
+    char *values;
 } Command;
 
-Command *parse_command(char *buffer);
+typedef struct
+{
+    Command *commands;
+    size_t size;
+} Commands;
+
+Commands parseCommands(char *buffer);
 
 #endif
