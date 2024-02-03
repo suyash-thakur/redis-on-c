@@ -85,3 +85,13 @@ Commands parseCommands(char *buffer)
 
     return commands;
 }
+
+void freeCommands(Commands *commands)
+{
+    for (size_t i = 0; i < commands->size; i++)
+    {
+        free(commands->commands[i].key);
+        free(commands->commands[i].values);
+    }
+    free(commands->commands);
+}

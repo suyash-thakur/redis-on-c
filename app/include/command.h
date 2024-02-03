@@ -26,5 +26,6 @@ typedef struct
 } Commands;
 
 Commands parseCommands(char *buffer);
+void freeCommands(Commands *commands);
 
 #endif

@@ -5,7 +5,7 @@ server="localhost"
 port="3000"
 
 # Data to send
-data="*2\r\n\$4\r\nECHO\r\n\$3\r\nhey\r\n"
+data="*2\r\n\$4\r\nECHO\r\n\$w\r\nwhat\r\n"
 
 # Number of connections to create
 num_connections=1

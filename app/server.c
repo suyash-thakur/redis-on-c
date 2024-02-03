@@ -109,38 +109,38 @@ void *handle_client(void *arg)
 			break;
 		}
 
-		char *response = "+OK\r\n";
+		char *response = "+PONG\r\n";
 
-		Commands commands = parseCommands(buffer);
+		// Commands commands = parseCommands(buffer);
 
-		for (size_t i = 0; i < commands.size; i++)
-		{
-			Command command = commands.commands[i];
-			switch (command.type)
-			{
-			case ECHO:
-				response = strcat(command.values, "\r\n");
-				break;
-			case GET:
-				response = "+OK\r\n";
-				break;
-			case SET:
-				response = "+OK\r\n";
-				break;
-			case DEL:
-				response = "+OK\r\n";
-				break;
-			case INVALID:
-				response = "-ERR invalid command\r\n";
-				break;
-			default:
-				response = "-ERR invalid command\r\n";
-				break;
-			}
-		}
+		// for (size_t i = 0; i < commands.size; i++)
+		// {
+		// 	Command command = commands.commands[i];
+		// 	switch (command.type)
+		// 	{
+		// 	case ECHO:
+		// 		response = command.values;
+		// 		break;
+		// 	case GET:
+		// 		response = "+OK\r\n";
+		// 		break;
+		// 	case SET:
+		// 		response = "+OK\r\n";
+		// 		break;
+		// 	case DEL:
+		// 		response = "+OK\r\n";
+		// 		break;
+		// 	case INVALID:
+		// 		response = "-ERR invalid command\r\n";
+		// 		break;
+		// 	default:
+		// 		response = "-ERR invalid command\r\n";
+		// 		break;
+		// 	}
+		// }
 		send(client_fd, response, strlen(response), 0);
+		// freeCommands(&commands);
 	}
-
 	printf("Closing connection\n");
 	close(client_fd);
 	return NULL;
